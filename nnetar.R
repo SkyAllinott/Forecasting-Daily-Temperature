@@ -45,14 +45,14 @@ mean(abs(test$error), na.rm=TRUE)
 test$errorperc <- abs((test$y-test$yhat)/test$y)
 mean(test$errorperc, na.rm = TRUE)*100
 
-colors <- c("True Values" = 'black', "Fitted Values" = "steelblue")
+colors <- c("True Values" = 'black', "Fitted Values" = "steelblue", 'Confidence Interval' = 'lightblue')
 ggplot(test, aes(x=as.Date(date), group=1), alpha=1) +
   geom_line(aes(y=y, col='True Values'), size=1) +
   geom_line(aes(y = yhat, col='Fitted Values'), size=1) + 
   geom_ribbon(aes(ymin=yhat_lower, ymax=yhat_upper), fill='lightblue', alpha=0.4) +
   labs(x="Date",
        y="Mean Temperature (Celcius)") +
-  ggtitle("Prophet Forecast of Daily Temperature in Edmonton") +
+  ggtitle("NNETAR Forecast of Daily Temperature in Edmonton") +
   scale_color_manual(values = colors) +
   theme(legend.title=element_blank()) +
   theme(axis.line.x=element_line(color='black', size=0.75, linetype='solid'),
