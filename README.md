@@ -6,4 +6,5 @@ This is currently in progress. The plan is to use daily data and compare multipl
 
 |  Measure | Prophet | SARIMA |
 | ----- | ------- | ------ |
-| MAE | 3.74 | 9.25 |
+| MAE | 3.71 | 6.41 |
+| MAPE | 162.27 | 263.73 |
