@@ -1,45 +1,39 @@
 library(prophet)
 library(ggplot2)
 
-setwd("G:/My Drive/R Projects/Daily Weather Data/")
+# Loading data:
+setwd("G:/My Drive/R Projects/Daily Weather Data/Data/")
+train <- read.csv("train.csv")
+test <- read.csv("test.csv")
 
 
-
-data <- read.csv("weather_data.csv")
-datasubset <- data[data$Station.Name == "EDMONTON BLATCHFORD",]
-
-data.prophet <- data.frame(ds = datasubset$Date, y = datasubset$Mean.Temperature..C.)
-data.prophet$ds <- as.Date(data.prophet$ds)
-
-data.prophet <- data.prophet[order(data.prophet$ds),]
-rownames(data.prophet) <- NULL
+# Prophet requires specific naming convention for dataframe
+train.prophet <- data.frame(ds = train$date, y = train$y)
+test.prophet <- data.frame(ds=as.Date(test$date), y=test$y)
 
 
-plot(data.prophet$ds, data.prophet$y, type='l')
+# Estimating model:
+model <- prophet(train.prophet, seasonality.mode = 'additive', changepoint.prior.scale = 0.01)
 
-
-# 30 day forecast:
-
-data.prophet.train <- data.prophet[1:(length(data.prophet$ds)-180),]
-data.prophet.test <- data.prophet[(length(data.prophet$ds)-179):length(data.prophet$ds),]
-
-
-model <- prophet(data.prophet.train, seasonality.mode = 'multiplicative', changepoint.prior.scale = 0.5)
+# 180 period forecast, same as test set:
 future <- make_future_dataframe(model, periods = 180, freq = 'day')
 forecast <- predict(model, future)
-data.prophet.test$yhat <- forecast$yhat[8010:8189]
-data.prophet.test$yhat_lower <- forecast$yhat_lower[8010:8189]
-data.prophet.test$yhat_upper <- forecast$yhat_upper[8010:8189]
-data.prophet.test$error <- data.prophet.test$y-data.prophet.test$yhat
-mean(abs(data.prophet.test$error))
+test.prophet$yhat <- forecast$yhat[8064:8243]
+test.prophet$yhat_lower <- forecast$yhat_lower[8064:8243]
+test.prophet$yhat_upper <- forecast$yhat_upper[8064:8243]
+test.prophet$error <- test.prophet$y-test.prophet$yhat
+mean(abs(test.prophet$error), na.rm = TRUE)
 
+
+# Plotting seasonality components:
 prophet_plot_components(model, forecast)
+# Plotting fit and forecast:
 plot(model, forecast)
 
 
-# Only off by 2 degrees.
+# Plotting forecast on test set for better visualization:
 colors <- c("True Values" = 'black', "Fitted Values" = "steelblue", 'Confidence Interval' = 'lightblue')
-ggplot(data.prophet.test, aes(x=ds, group=1), alpha=1) +
+ggplot(test.prophet, aes(x=ds, group=1), alpha=1) +
   geom_line(aes(y=y, col='True Values'), size=1) +
   geom_line(aes(y = yhat, col='Fitted Values'), size=1) + 
   geom_ribbon(aes(ymin=yhat_lower, ymax=yhat_upper), fill='lightblue', alpha=0.4) +
@@ -54,4 +48,5 @@ ggplot(data.prophet.test, aes(x=ds, group=1), alpha=1) +
         legend.key=element_rect(fill='transparent', color='transparent'))
 
 
+# Visualising changepoints to see if I need to tune model:
 plot(model, forecast) + add_changepoints_to_plot(model)
