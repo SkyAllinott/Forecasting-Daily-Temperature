@@ -4,7 +4,7 @@ This is currently in progress. The plan is to use daily data and compare multipl
 
 ## Results (So far):
 
-|  Measure | Prophet | SARIMA | NNETAR |
-| ----- | ------- | ------ | ---- |
-| MAE | 3.71 | 6.41 | 4.57 |
-| MAPE | 162.27 | 263.73 | 124.55 |
+|  Measure | Prophet | SARIMA | NNETAR | XGBoost |
+| ----- | ------- | ------ | ---- | ---- |
+| MAE | 3.71 | 6.41 | 4.57 | 2.38 |
+| MAPE | 162.27 | 263.73 | 124.55 | 121.0 |
