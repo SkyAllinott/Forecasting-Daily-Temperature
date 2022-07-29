@@ -1,6 +1,7 @@
 # Forecasting Daily Temperature in Edmonton:
 ## Table of Contents
 * [Overview](https://github.com/SkyAllinott/Forecasting-Daily-Temperature#overview)
+  - [Understanding this repo](https://github.com/SkyAllinott/Forecasting-Daily-Temperature/edit/master/README.md#understanding-this-repo)
 
 * [Results](https://github.com/SkyAllinott/Forecasting-Daily-Temperature#results)
 
@@ -18,6 +19,11 @@
 Pulling data from Edmonton's Open data portal (https://data.edmonton.ca/Environmental-Services/Weather-Data-Daily-Environment-Canada/s4ws-tdws), I forecast daily weather using a training set of January 1st, 2000 to January 27, 2022. I then forecast from January 28th, 2022 to July 26, 2022 (180 days).
 
 I use Facebook's Prophet model, a seasonal ARIMA model, a feed forward neural network (NNETAR), and an XGBoost model with derived time series features.
+
+### Understanding this repo:
+The main analytical files (where models are fitted and forecasted) is within the main page. I include figures in `./Figures`. These contain the forecasts seen below, and the seasonality discussion at the end.
+
+The `./Data` folder contains the original .csv downloaded, the script to transform it, and the training and test data, should you want it.
 
 ## Results
 
