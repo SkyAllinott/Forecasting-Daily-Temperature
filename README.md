@@ -6,5 +6,5 @@ This is currently in progress. The plan is to use daily data and compare multipl
 
 |  Measure | Prophet | SARIMA | NNETAR | XGBoost |
 | ----- | ------- | ------ | ---- | ---- |
-| MAE | 3.71 | 6.41 | 4.57 | 2.38 |
-| MAPE | 162.27 | 263.73 | 124.55 | 121.0 |
+| MAE | 3.71 | 6.41 | 4.57 | 3.79 |
+| MAPE | 162.27 | 263.73 | 124.55 | 157.0 |
