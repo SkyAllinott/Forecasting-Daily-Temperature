@@ -30,9 +30,6 @@ fulldata['weekofyear'] = fulldata['date'].dt.weekofyear
 fulldata = fulldata.drop('date', axis=1)
 # XGBoost wasn't playing nice with NA's, so I'll interprolate with a linear method, as I did in nnetar
 fulldata = fulldata.interpolate()
-# Create 14 lags
-for i in range(1, 14, 1):
-    fulldata.loc[:, 'y'+"_"+str(i)] = fulldata['y'].shift(i)
 
 
 
@@ -102,20 +99,19 @@ plt.plot(test['index'], predictions, color='red')
 iterations = 100
 prediction_set = np.zeros(shape=(180, iterations))
 for i in range(iterations):
-    model = xgb.XGBRegressor(seed = (i*random.randint(1,100)), **best_parameters)
+    model = xgb.XGBRegressor(seed=(i*random.randint(1,100)), **best_parameters)
     model.fit(train_features, train_labels)
     prediction_set[:, i] = model.predict(test_features)
 
 prediction_set_test = prediction_set.transpose()
 
-prediction_upper = np.quantile(prediction_set_test, q=0.975, axis=0)
-prediction_lower = np.quantile(prediction_set_test, q=0.025, axis=0)
+standard_deviations = np.std(prediction_set_test, axis=0)
 
 date = pd.to_datetime(date)
 fig, ax = plt.subplots()
 plt.plot(date, test['y'], color='black', label="Actual Value")
-plt.plot(date, predictions, color='steelblue', label = "Forecasted Value")
-plt.fill_between(date, prediction_lower, prediction_upper, color='lightblue', alpha=0.6, label="95% Prediction Interval")
+plt.plot(date, predictions, color='steelblue', label="Forecasted Value")
+plt.fill_between(date, (predictions-2*standard_deviations), (predictions+2*standard_deviations), color='lightblue', alpha=0.6, label="95% Prediction Interval")
 plt.legend(loc='upper left')
 plt.title("XGBoost Forecast of Daily Temperature in Edmonton")
 plt.xlabel("Date (Year-Month)")
