@@ -1,11 +1,25 @@
 # Forecasting Daily Temperature in Edmonton:
+## Table of Contents
+* [Overview](https://github.com/SkyAllinott/Forecasting-Daily-Temperature#overview)
 
-## Overview:
+* [Results](https://github.com/SkyAllinott/Forecasting-Daily-Temperature#results)
+
+  -  [MAPE as an accuracy measure](https://github.com/SkyAllinott/Forecasting-Daily-Temperature#mape-as-an-accuracy-measure)
+
+* [Models](https://github.com/SkyAllinott/Forecasting-Daily-Temperature#model-discussion)
+  -  [Prophet](https://github.com/SkyAllinott/Forecasting-Daily-Temperature#1-prophet)
+  -  [XGBoost](https://github.com/SkyAllinott/Forecasting-Daily-Temperature#1-XGBoost)
+  -  [NNETAR](https://github.com/SkyAllinott/Forecasting-Daily-Temperature#1-nnetar)
+  -  [SARIMA](https://github.com/SkyAllinott/Forecasting-Daily-Temperature#1-sarima) 
+
+* [Seasonality](https://github.com/SkyAllinott/Forecasting-Daily-Temperature#seasonality)
+
+## Overview
 Pulling data from Edmonton's Open data portal (https://data.edmonton.ca/Environmental-Services/Weather-Data-Daily-Environment-Canada/s4ws-tdws), I forecast daily weather using a training set of January 1st, 2000 to January 27, 2022. I then forecast from January 28th, 2022 to July 26, 2022 (180 days).
 
 I use Facebook's Prophet model, a seasonal ARIMA model, a feed forward neural network (NNETAR), and an XGBoost model with derived time series features.
 
-## Results (So far):
+## Results
 
 |  Measure | Prophet | SARIMA | NNETAR | XGBoost |
 | ----- | ------- | ------ | ---- | ---- |
@@ -16,7 +30,7 @@ The lowest MAE comes from Facebook's Prophet model, and suggests the 180 day for
 
 The lowest MAPE is the NNETAR model; which has a higher MAE than the Prophet model.
 
-### MAPE as an accuracy measure:
+### MAPE as an accuracy measure
 This inconsistency is because the MAPE measure is **not symmetric**. In simple terms, the MAPE punishes x units above the actual value more than x units below. Due to this, if you used MAPE as an accuracy measure to fit models, then you would consistently get models that predict too low. You will see in the NNETAR forecast figure below that it is consistently under the true value for a portion of the model, which leads to it lowering it's MAPE, but keeping its higher MAE than prophet.
 
 However, the MAPE is scale invariant, and so after the model is constructed, comparisons between MAPE's can be made. Importantly, since the MAPE isn't used in model construction, the odds of a forecast being too high/too low is more or less random, so MAPE remains a viable comparison; after forecasting. 
@@ -25,7 +39,7 @@ Typical wisdom suggests that forecasts with MAPE > 50 are "poor forecasters." Ev
 
 Due to better performance on other series, and the variety of methods used, I believe the high MAPE's reflect the difficulty of this series. 
 
-## Model Discussion:
+## Model Discussion
 I discuss the models in order of accuracy.
 
 ### 1. Prophet
@@ -64,7 +78,7 @@ The SARIMA model is the worst by far, and suffers from many issues. Like NNETAR,
 
 However, the worst offence is it's computation time. Utilising just `auto.arima`, which selects the optimal model using in-sample fit, takes about 15 minutes to run; even with enhancements that sacrifice accuracy for speed. This makes it by far the slowest method, for the worst results.
 
-## Seasonality:
+## Seasonality
 Here I utilise Prophet to understand the seasonality effects, using the figure below:
 ![prophet seasonality](https://user-images.githubusercontent.com/52394699/181847917-77d7412b-344d-4413-a2f4-7a3a53349479.png)
 
